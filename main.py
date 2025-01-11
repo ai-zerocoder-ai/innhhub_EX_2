@@ -52,44 +52,44 @@ def get_bitcoin_rate():
 
 def generate_rate_message():
     """Генерация сообщения с курсами валют, биткойна и фьючерсами"""
-    response = "Курсы валют, биткойна и энергетических фьючерсов:\n\n"
+    response = "Для информации:\n\n"
 
     # Курсы валют
     rates = get_exchange_rates()
     if rates:
-        response += "1. Курсы валют:\n"
+        response += "Курсы валют (ЦБ РФ):\n"
         for code, data in rates.items():
-            response += f"- {data['name']} ({code}): {data['nominal']} = {data['value']} руб.\n"
+            response += f"{data['name']} ({code}): {data['nominal']} = {data['value']} руб.\n"
     else:
         response += "Не удалось получить курсы валют.\n"
 
     # Курс биткойна
     bitcoin_rate = get_bitcoin_rate()
     if bitcoin_rate:
-        response += f"\n2. Курс биткойна:\n- 1 BTC = {bitcoin_rate / 1_000_000:.3f} млн руб.\n"
+        response += f"\nКурс биткойна (CoinGecko):\nBTC: 1 = {bitcoin_rate / 1_000_000:.3f} млн руб.\n"
     else:
         response += "\nНе удалось получить курс биткойна.\n"
 
     # Фьючерсы
-    response += "\n3. Фьючерсы:\n"
+    response += "\nФьючерсы (investing.com):\n"
 
     ttf_price = get_ttf_price()
     if ttf_price:
-        response += f"- Природный газ (TFAc1): {ttf_price} €/MWh\n"
+        response += f"Газ на TTF (TFAc1): {ttf_price} € / MWh\n"
     else:
-        response += "- Не удалось получить цену TTF.\n"
+        response += "Не удалось получить цену TTF.\n"
 
     carbon_price = get_carbon_price()
     if carbon_price:
-        response += f"- CO₂ (EU ETS): {carbon_price} €/t\n"
+        response += f"CO₂ (EU ETS): {carbon_price} € / t\n"
     else:
-        response += "- Не удалось получить цену CO₂.\n"
+        response += "Не удалось получить цену CO₂.\n"
 
     jkm_price = get_jkm_price()
     if jkm_price:
-        response += f"- СПГ (JKMc1): {jkm_price} $/MMBtu\n"
+        response += f"СПГ (JKMc1): {jkm_price} $ / MMBtu\n"
     else:
-        response += "- Не удалось получить цену LNG JKM.\n"
+        response += "Не удалось получить цену LNG JKM.\n"
 
     return response
 
@@ -108,7 +108,7 @@ def send_all_rates(message):
 def send_daily_rates():
     """Ежедневная отправка курсов в группу Telegram"""
     response = generate_rate_message()
-    bot.send_message(GROUP_CHAT_ID, response)
+    bot.send_message(CHAT_ID, response)
 
 def schedule_daily_task():
     """Планирование ежедневной задачи"""
@@ -116,7 +116,7 @@ def schedule_daily_task():
     moscow_timezone = pytz.timezone("Europe/Moscow")
 
     # Планируем задачу на 9:00 утра по Москве
-    schedule.every().day.at("09:00").do(send_daily_rates)
+    schedule.every().day.at("01:55").do(send_daily_rates)
 
     while True:
         # Учет текущего времени с учетом временной зоны
