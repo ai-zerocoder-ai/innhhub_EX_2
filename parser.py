@@ -49,14 +49,3 @@ def get_jkm_price():
     """
     url = "https://ru.investing.com/commodities/lng-japan-korea-marker-platts-futures"
     return get_price_from_investing(url)
-
-if __name__ == "__main__":
-    print("Парсим данные с Investing.com...")
-    ttf_price = get_ttf_price()
-    print(f"Цена природного газа (TTF): {ttf_price} €/МВт·ч")
-
-    carbon_price = get_carbon_price()
-    print(f"Цена на CO₂ (EU ETS): {carbon_price} €/тонна")
-
-    jkm_price = get_jkm_price()
-    print(f"Цена на СПГ (LNG JKM): {jkm_price} $/MMBtu")
